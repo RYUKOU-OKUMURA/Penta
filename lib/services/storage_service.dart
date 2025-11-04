@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -159,10 +158,7 @@ class StorageService extends ChangeNotifier {
       Uint8List encoded;
       if (processed.hasAlpha) {
         encoded = Uint8List.fromList(
-          img.encodePng(
-            processed,
-            level: img.PngLevel.level6,
-          ),
+          img.encodePng(processed),
         );
       } else {
         encoded = Uint8List.fromList(

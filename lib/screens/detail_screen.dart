@@ -241,6 +241,8 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
     );
 
+    if (!mounted) return;
+    
     if (shouldDelete == true) {
       final storage = context.read<StorageService>();
       await storage.deletePhoto(widget.photoIndex);
