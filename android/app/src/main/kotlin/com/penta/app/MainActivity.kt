@@ -1,4 +1,4 @@
-package com.example.penta
+package com.penta.app
 
 import io.flutter.embedding.android.FlutterActivity
 
