@@ -219,23 +219,19 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   /// 削除確認ダイアログ
-  void _showDeleteDialog(BuildContext context) {
-    showDialog(
+  Future<void> _showDeleteDialog(BuildContext context) async {
+    final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('削除確認'),
         content: const Text('この画像を削除しますか?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext, false),
             child: const Text('キャンセル'),
           ),
           TextButton(
-            onPressed: () {
-              context.read<StorageService>().deletePhoto(widget.photoIndex);
-              Navigator.pop(context); // ダイアログを閉じる
-              Navigator.pop(context); // 詳細画面を閉じる
-            },
+            onPressed: () => Navigator.pop(dialogContext, true),
             child: const Text(
               '削除',
               style: TextStyle(color: Colors.red),
@@ -244,5 +240,12 @@ class _DetailScreenState extends State<DetailScreen> {
         ],
       ),
     );
+
+    if (shouldDelete == true) {
+      final storage = context.read<StorageService>();
+      await storage.deletePhoto(widget.photoIndex);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    }
   }
 }

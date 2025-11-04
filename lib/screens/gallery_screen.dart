@@ -15,7 +15,7 @@ class GalleryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('5枚だけギャラリー'),
+        title: const Text('Penta'),
         actions: [
           Consumer<StorageService>(
             builder: (context, storage, _) {

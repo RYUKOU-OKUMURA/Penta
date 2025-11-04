@@ -1,8 +1,10 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 import '../models/photo_item.dart';
 
 /// ローカルストレージ管理サービス
@@ -75,8 +77,10 @@ class StorageService extends ChangeNotifier {
     }
 
     try {
+      final optimizedData = await _optimizeImage(imageData);
+
       // 画像を保存
-      final success = await _saveImageFile(imageData, fileName);
+      final success = await _saveImageFile(optimizedData, fileName);
       if (!success) {
         return '画像の保存に失敗しました';
       }
@@ -108,19 +112,76 @@ class StorageService extends ChangeNotifier {
       if (kIsWeb) {
         // Webの場合はBase64でSharedPreferencesに保存
         final base64Image = base64Encode(imageData);
-        await _prefs?.setString('$_imagePrefix$fileName', base64Image);
-        return true;
+        final prefs = _prefs;
+        if (prefs == null) {
+          return false;
+        }
+        return await prefs.setString('$_imagePrefix$fileName', base64Image);
       }
-      
+
       final dir = await getApplicationDocumentsDirectory();
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
       final file = File('${dir.path}/$fileName');
-      await file.writeAsBytes(imageData);
+      await file.writeAsBytes(imageData, flush: true);
       return true;
     } catch (e) {
       if (kDebugMode) {
         debugPrint('ファイル保存エラー: $e');
       }
       return false;
+    }
+  }
+
+  Future<Uint8List> _optimizeImage(Uint8List imageData) async {
+    try {
+      final decoded = img.decodeImage(imageData);
+      if (decoded == null) {
+        return imageData;
+      }
+
+      const maxDimension = 1600;
+      img.Image processed = decoded;
+      if (decoded.width > maxDimension || decoded.height > maxDimension) {
+        processed = img.copyResize(
+          decoded,
+          width: decoded.width > decoded.height
+              ? maxDimension
+              : (decoded.width * maxDimension / decoded.height).round(),
+          height: decoded.height >= decoded.width
+              ? maxDimension
+              : (decoded.height * maxDimension / decoded.width).round(),
+          interpolation: img.Interpolation.average,
+        );
+      }
+
+      Uint8List encoded;
+      if (processed.hasAlpha) {
+        encoded = Uint8List.fromList(
+          img.encodePng(
+            processed,
+            level: img.PngLevel.level6,
+          ),
+        );
+      } else {
+        encoded = Uint8List.fromList(
+          img.encodeJpg(
+            processed,
+            quality: 80,
+          ),
+        );
+      }
+
+      if (encoded.lengthInBytes < imageData.lengthInBytes) {
+        return encoded;
+      }
+      return imageData;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('画像最適化エラー: $e');
+      }
+      return imageData;
     }
   }
 
