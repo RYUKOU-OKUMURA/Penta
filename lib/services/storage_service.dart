@@ -140,7 +140,7 @@ class StorageService extends ChangeNotifier {
         return imageData;
       }
 
-      const maxDimension = 1600;
+      const maxDimension = 1200;
       img.Image processed = decoded;
       if (decoded.width > maxDimension || decoded.height > maxDimension) {
         processed = img.copyResize(
@@ -164,7 +164,7 @@ class StorageService extends ChangeNotifier {
         encoded = Uint8List.fromList(
           img.encodeJpg(
             processed,
-            quality: 80,
+            quality: 70,
           ),
         );
       }
@@ -229,6 +229,9 @@ class StorageService extends ChangeNotifier {
     
     // 並び順を再調整
     await _reorderPhotos();
+    
+    // UI更新を通知
+    notifyListeners();
   }
 
   /// 全写真を削除
