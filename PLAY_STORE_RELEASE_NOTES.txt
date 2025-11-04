@@ -1,0 +1,41 @@
+=== 日本語版 ===
+
+🎉 Penta v1.0.0 - 初回リリース！
+
+本当に大切な写真だけを厳選して保存する、新しいギャラリーアプリです。
+
+✨ 新機能:
+• 5枚限定ギャラリー - 厳選された思い出だけを保管
+• コメント機能 - 各画像に思い出を記録
+• 並べ替え - ドラッグ&ドロップで自由に整理
+• 画像最適化 - 自動で最適なサイズに圧縮
+• フルスクリーン表示 - タップで詳細ビュー
+
+🔐 プライバシー保護:
+• すべてのデータは端末内に保存
+• インターネット接続不要
+• 広告なし・トラッキングなし
+
+Pentaで、特別な5枚を大切に。
+
+---
+
+=== English Version ===
+
+🎉 Penta v1.0.0 - Initial Release!
+
+A new gallery app for curating only your most precious photos.
+
+✨ Features:
+• 5-Photo Limit - Keep only what matters most
+• Comments - Add memories to each photo
+• Reorder - Drag & drop to organize
+• Auto Optimization - Smart image compression
+• Full Screen View - Tap for detailed view
+
+🔐 Privacy First:
+• All data stored locally on device
+• No internet connection required
+• No ads, no tracking
+
+Penta - Your special five.
